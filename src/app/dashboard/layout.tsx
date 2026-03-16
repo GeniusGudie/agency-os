@@ -27,7 +27,19 @@ export default async function DashboardLayout({
       if(adminUser?.role === 'super_admin') {
           redirect('/admin')
       }
-      redirect('/login')
+      
+      console.warn('Unauthorized access attempt to /dashboard. User:', user.email, 'Role:', adminUser?.role)
+      return (
+        <div className="flex min-h-screen items-center justify-center bg-zinc-950 p-4">
+          <div className="text-center space-y-4">
+            <h1 className="text-2xl font-bold text-red-500">Unauthorized</h1>
+            <p className="text-zinc-400">Your account does not have access to this dashboard.</p>
+            <form action="/login" method="GET">
+               <button type="submit" className="text-indigo-400 hover:text-indigo-300 underline">Return to Login</button>
+            </form>
+          </div>
+        </div>
+      )
   }
 
   return (
