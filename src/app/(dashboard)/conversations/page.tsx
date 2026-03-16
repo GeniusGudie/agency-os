@@ -23,19 +23,30 @@ export default function ConversationsPage() {
 
   useEffect(() => {
     async function fetchSessions() {
-      const { data } = await supabase
+      const match = document.cookie.match(new RegExp('(^| )org_id=([^;]+)'));
+      const orgId = match ? match[2] : null;
+
+      let query = supabase
         .from('agency_chat_history')
-        .select('session_id, created_at')
+        .select('session_id, created_at, org_id')
         .order('created_at', { ascending: false });
+
+      if (orgId) {
+        query = query.eq('org_id', orgId);
+      }
+
+      const { data } = await query;
       
       if (data) {
         // Unique sessions
-        const unique = Array.from(new Set(data.map(m => m.session_id)))
-          .map(sid => data.find(m => m.session_id === sid))
+        const unique = Array.from(new Set(data.map((m: any) => m.session_id)))
+          .map(sid => data.find((m: any) => m.session_id === sid))
           .filter(s => s !== undefined);
         setSessions(unique);
-        if (unique.length > 0 && !selectedSession) {
+        if (unique.length > 0 && (!selectedSession || !unique.find(s => s?.session_id === selectedSession))) {
           setSelectedSession(unique[0].session_id);
+        } else if (unique.length === 0) {
+          setSelectedSession(null);
         }
       }
       setLoading(false);
@@ -58,14 +69,19 @@ export default function ConversationsPage() {
     fetchMessages();
 
     // Realtime subscription
+    const match = document.cookie.match(new RegExp('(^| )org_id=([^;]+)'));
+    const orgId = match ? match[2] : null;
+
     const channel = supabase
       .channel(`chat:${selectedSession}`)
       .on('postgres_changes', { 
         event: 'INSERT', 
         schema: 'public', 
         table: 'agency_chat_history',
-        filter: `session_id=eq.${selectedSession}`
-      }, (payload) => {
+        filter: orgId 
+          ? `session_id=eq.${selectedSession}&org_id=eq.${orgId}` 
+          : `session_id=eq.${selectedSession}`
+      }, (payload: { new: any }) => {
         setMessages((prev) => [...prev, payload.new]);
       })
       .subscribe();

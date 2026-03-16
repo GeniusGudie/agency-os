@@ -20,11 +20,20 @@ export default function LeadsPage() {
 
   useEffect(() => {
     async function fetchLeads() {
-      const { data } = await supabase
+      let query = supabase
         .from('leads')
         .select('*')
         .order('is_hot', { ascending: false })
         .order('created_at', { ascending: false });
+      
+      const match = document.cookie.match(new RegExp('(^| )org_id=([^;]+)'));
+      const orgId = match ? match[2] : null;
+      
+      if (orgId) {
+        query = query.eq('org_id', orgId);
+      }
+
+      const { data } = await query;
       
       setLeads(data || []);
       setLoading(false);

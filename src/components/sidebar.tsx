@@ -11,17 +11,19 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Workflow
+  Workflow,
+  Building2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 const navigation = [
   { name: "Overview", href: "/", icon: BarChart3 },
-  { name: "Conversations", href: "/conversations", icon: MessageSquare },
-  { name: "Lead Pipeline", href: "/leads", icon: Users },
-  { name: "System Errors", href: "/errors", icon: AlertCircle },
-  { name: "Workflows", href: "/workflows", icon: Workflow },
+  { name: "Live Chat", href: "/conversations", icon: MessageSquare },
+  { name: "Lead Stream", href: "/leads", icon: Users },
+  { name: "Dealerships", href: "/clients", icon: Building2 },
+  { name: "Diagnostics", href: "/errors", icon: AlertCircle },
+  { name: "Automations", href: "/workflows", icon: Workflow },
 ];
 
 export function Sidebar() {

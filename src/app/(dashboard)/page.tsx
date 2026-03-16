@@ -20,6 +20,8 @@ import {
   ArrowUpRight,
   ArrowDownRight
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { BotStatusPanel } from "@/components/bot-status-panel";
 
@@ -57,6 +59,44 @@ const StatCard = ({ title, value, change, trend, icon: Icon, color }: any) => (
 );
 
 export default function OverviewPage() {
+  const [stats, setStats] = useState({
+    leads: 0,
+    conversations: 0,
+    hotLeads: 0,
+    loading: true
+  });
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchStats() {
+      const match = document.cookie.match(new RegExp('(^| )org_id=([^;]+)'));
+      const orgId = match ? match[2] : null;
+
+      let leadsQuery = supabase.from('leads').select('id, is_hot', { count: 'exact' });
+      let chatsQuery = supabase.from('agency_chat_history').select('session_id', { count: 'exact' });
+
+      if (orgId) {
+        leadsQuery = leadsQuery.eq('org_id', orgId);
+        chatsQuery = chatsQuery.eq('org_id', orgId);
+      }
+
+      const [leadsRes, chatsRes] = await Promise.all([
+        leadsQuery,
+        chatsQuery
+      ]);
+
+      const uniqueSessions = new Set(chatsRes.data?.map((c: any) => c.session_id) || []).size;
+
+      setStats({
+        leads: leadsRes.count || 0,
+        conversations: uniqueSessions,
+        hotLeads: leadsRes.data?.filter((l: any) => l.is_hot).length || 0,
+        loading: false
+      });
+    }
+    fetchStats();
+  }, [supabase]);
+
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20 md:pb-0">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
@@ -73,7 +113,7 @@ export default function OverviewPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
           title="Daily Leads" 
-          value="248" 
+          value={stats.loading ? "..." : stats.leads.toLocaleString()} 
           change="+12.5%" 
           trend="up" 
           icon={Users} 
@@ -81,7 +121,7 @@ export default function OverviewPage() {
         />
         <StatCard 
           title="Conversations" 
-          value="1,420" 
+          value={stats.loading ? "..." : stats.conversations.toLocaleString()} 
           change="+8.2%" 
           trend="up" 
           icon={MessageSquare}
@@ -89,7 +129,7 @@ export default function OverviewPage() {
         />
         <StatCard 
           title="Hot Leads" 
-          value="14" 
+          value={stats.loading ? "..." : stats.hotLeads.toLocaleString()} 
           change="-2.4%" 
           trend="down" 
           icon={Flame}
