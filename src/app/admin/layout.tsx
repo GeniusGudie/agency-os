@@ -1,9 +1,23 @@
 import { createClient } from '@/utils/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import { ClientSwitcher } from '@/components/client-switcher'
-import { LayoutDashboard, Users, Activity, Settings, LogOut } from 'lucide-react'
+import { Activity, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { logout } from '@/app/login/actions'
+
+function SignOutButton() {
+  return (
+    <form action={logout}>
+      <button
+        type="submit"
+        className="p-2 text-zinc-400 hover:text-white transition-colors"
+        title="Sign out"
+      >
+        <LogOut className="h-5 w-5" />
+      </button>
+    </form>
+  )
+}
 
 export default async function AdminLayout({
   children,
@@ -55,13 +69,7 @@ export default async function AdminLayout({
             </div>
 
             <div className="flex items-center gap-4">
-               <button
-                  onClick={logout}
-                  className="p-2 text-zinc-400 hover:text-white transition-colors"
-                  title="Sign out"
-                >
-                  <LogOut className="h-5 w-5" />
-                </button>
+               <SignOutButton />
             </div>
           </div>
         </div>
