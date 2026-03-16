@@ -1,0 +1,3 @@
+module.exports=[57087,a=>{a.v({className:"sora_95996a71-module__CDjqWG__className"})},27572,a=>{"use strict";var b=a.i(7997),c=a.i(57087);let d={className:c.default.className,style:{fontFamily:"'Sora', 'Sora Fallback'",fontStyle:"normal"}};function e({children:a}){return(0,b.jsx)("html",{lang:"en",className:"dark h-full",children:(0,b.jsx)("body",{className:`${d.className} h-full antialiased`,children:a})})}null!=c.default.variable&&(d.variable=c.default.variable),a.s(["default",()=>e,"metadata",0,{title:"Agency-OS",description:"Multi-Tenant AI Lead Management Dashboard"}],27572)}];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__5aeb87a0._.js.map
