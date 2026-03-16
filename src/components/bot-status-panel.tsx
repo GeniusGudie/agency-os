@@ -33,7 +33,7 @@ export function BotStatusPanel({ status = 'running', lastActive = '2 minutes ago
             isRunning ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-red-500/10 text-red-400 border border-red-500/20"
         )}>
             {isRunning ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
-            {isRunning ? 'Bot is running ✓' : 'Bot stopped ✕'}
+            {isRunning ? 'Bot is running ✓' : 'n8n: Bot offline ✕'}
         </div>
       </div>
 

@@ -11,17 +11,17 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 
-const data = [
-  { name: 'Mon', leads: 42 },
-  { name: 'Tue', leads: 65 },
-  { name: 'Wed', leads: 48 },
-  { name: 'Thu', leads: 82 },
-  { name: 'Fri', leads: 91 },
-  { name: 'Sat', leads: 34 },
-  { name: 'Sun', leads: 28 },
-]
+export function RevenueChart({ initialData = [] }: { initialData?: any[] }) {
+  const displayData = initialData.length > 0 ? initialData : [
+    { name: 'Mon', leads: 0 },
+    { name: 'Tue', leads: 0 },
+    { name: 'Wed', leads: 0 },
+    { name: 'Thu', leads: 0 },
+    { name: 'Fri', leads: 0 },
+    { name: 'Sat', leads: 0 },
+    { name: 'Sun', leads: 0 },
+  ]
 
-export function RevenueChart() {
   return (
     <Card className="border border-zinc-800 bg-zinc-900 shadow-2xl shadow-black/50 overflow-hidden flex-1 flex flex-col pt-2 col-span-1 lg:col-span-2 rounded-2xl">
       <CardHeader className="pb-0 pl-6">
@@ -34,7 +34,7 @@ export function RevenueChart() {
       </CardHeader>
       <CardContent className="flex-1 p-0 pl-0 pr-6 mt-4 min-h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 5, right: 0, left: -20, bottom: 5 }}>
+          <LineChart data={displayData} margin={{ top: 5, right: 0, left: -20, bottom: 5 }}>
             <defs>
               <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1} />

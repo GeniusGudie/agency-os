@@ -1,11 +1,16 @@
+import { getDashboardStats, getBotStatus, getLeadHistory } from '@/app/actions'
 import { Card, CardContent } from '@/components/ui/card'
-import { Flame, Users, Zap, CheckCircle2, MoreHorizontal, ArrowUpRight, TrendingUp } from 'lucide-react'
+import { Flame, Users, Zap, CheckCircle2, ArrowUpRight } from 'lucide-react'
 import { RevenueChart } from '@/components/revenue-chart'
 import { LeadTable } from '@/components/lead-table'
 import { BotStatusPanel } from '@/components/bot-status-panel'
 import { cn } from '@/lib/utils'
 
 export default async function DashboardPage() {
+  const stats = await getDashboardStats()
+  const botHealth = await getBotStatus()
+  const history = await getLeadHistory()
+
   return (
     <div className="max-w-[1200px] mx-auto space-y-8">
       {/* Welcome Section */}
@@ -36,7 +41,7 @@ export default async function DashboardPage() {
                 </div>
                 <div className="text-[10px] font-black text-indigo-500/50 uppercase tracking-widest pt-1">Total Leads</div>
             </div>
-            <h3 className="text-3xl font-black text-white mb-2 tracking-tighter">1,284</h3>
+            <h3 className="text-3xl font-black text-white mb-2 tracking-tighter">{stats.totalLeads}</h3>
             <div className="flex items-center gap-2">
                 <span className="flex items-center text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
                     <ArrowUpRight className="w-3 h-3 mr-0.5" /> 14%
@@ -55,7 +60,7 @@ export default async function DashboardPage() {
                 </div>
                 <div className="text-[10px] font-black text-amber-500/50 uppercase tracking-widest pt-1">Hot Leads</div>
             </div>
-            <h3 className="text-3xl font-black text-white mb-2 tracking-tighter">42</h3>
+            <h3 className="text-3xl font-black text-white mb-2 tracking-tighter">{stats.hotLeads}</h3>
             <div className="flex items-center gap-2">
                 <span className="text-[10px] text-amber-500 font-black uppercase tracking-widest">Immediate Intent</span>
                 <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-ping"></div>
@@ -63,19 +68,29 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Bot Status Card (Simplified for Metric Row) */}
+        {/* Bot Status Card */}
         <Card className="border border-zinc-800 bg-zinc-900 shadow-xl overflow-hidden relative group rounded-2xl">
           <CardContent className="p-6">
              <div className="flex justify-between items-start mb-4">
-                <div className="bg-emerald-500/10 p-2.5 rounded-xl text-emerald-400 ring-1 ring-emerald-500/30">
-                    <Zap className="w-5 h-5 fill-emerald-500/20" />
+                <div className={cn(
+                  "p-2.5 rounded-xl ring-1 shadow-inner",
+                  botHealth.status === 'running' ? "bg-emerald-500/10 text-emerald-400 ring-emerald-500/30" : "bg-red-500/10 text-red-400 ring-red-500/30"
+                )}>
+                    <Zap className={cn("w-5 h-5", botHealth.status === 'running' && "fill-emerald-500/20")} />
                 </div>
-                <div className="text-[10px] font-black text-emerald-500/50 uppercase tracking-widest pt-1">Bot Active</div>
+                <div className="text-[10px] font-black uppercase tracking-widest pt-1 opacity-50">Bot Status</div>
             </div>
-            <h3 className="text-2xl font-black text-white mb-2 tracking-tight">Healthy</h3>
+            <h3 className="text-2xl font-black text-white mb-2 tracking-tight uppercase">
+              {botHealth.status === 'running' ? 'Active' : 'Offline'}
+            </h3>
             <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Live Monitoring</span>
+                <div className={cn(
+                  "w-1.5 h-1.5 rounded-full",
+                  botHealth.status === 'running' ? "bg-emerald-500 animate-pulse" : "bg-red-500"
+                )}></div>
+                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
+                  {botHealth.status === 'running' ? 'Live Monitoring' : 'Attention Required'}
+                </span>
             </div>
           </CardContent>
         </Card>
@@ -89,9 +104,9 @@ export default async function DashboardPage() {
                 </div>
                 <div className="text-[10px] font-black text-purple-500/50 uppercase tracking-widest pt-1">Success Rate</div>
             </div>
-            <h3 className="text-3xl font-black text-white mb-2 tracking-tighter">98.4%</h3>
+            <h3 className="text-3xl font-black text-white mb-2 tracking-tighter">{stats.successRate}</h3>
             <div className="w-full bg-zinc-800 h-1.5 rounded-full mt-3 overflow-hidden">
-                <div className="bg-indigo-500 h-full w-[98.4%] shadow-[0_0_8px_rgba(99,102,241,0.5)]"></div>
+                <div className="bg-indigo-500 h-full shadow-[0_0_8px_rgba(99,102,241,0.5)]" style={{ width: stats.successRate }}></div>
             </div>
           </CardContent>
         </Card>
@@ -101,12 +116,16 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
          <RevenueChart />
          <div className="lg:col-span-1">
-             <BotStatusPanel status="running" lastActive="2 minutes ago" successRate="98.4%" />
+             <BotStatusPanel 
+               status={botHealth.status as any} 
+               lastActive={botHealth.lastActive} 
+               successRate={stats.successRate} 
+             />
          </div>
       </div>
 
       {/* Leads Section */}
-      <LeadTable />
+      <LeadTable initialLeads={stats.recentLeads as any} />
     </div>
   )
 }

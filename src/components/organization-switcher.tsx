@@ -1,6 +1,4 @@
-'use client'
-
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   Check, 
   ChevronsUpDown, 
@@ -14,17 +12,32 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-
-const mockOrgs = [
-  { id: 'all', name: 'Global Network', type: 'network' },
-  { id: 'dealership_1', name: 'Lagos Premium Motors', type: 'dealer' },
-  { id: 'dealership_2', name: 'Abuja Luxury Cars', type: 'dealer' },
-  { id: 'dealership_3', name: 'Port Harcourt Autos', type: 'dealer' },
-]
+import { createClient } from '@/utils/supabase/client'
 
 export function OrganizationSwitcher() {
   const [open, setOpen] = useState(false)
-  const [selectedOrg, setSelectedOrg] = useState(mockOrgs[0])
+  const [organizations, setOrganizations] = useState<any[]>([])
+  const [selectedOrg, setSelectedOrg] = useState<any>({ id: 'all', name: 'Global Network' })
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchOrgs() {
+      const { data } = await supabase
+        .from('organizations')
+        .select('*')
+        .eq('is_active', true)
+      
+      if (data) {
+        setOrganizations([{ id: 'all', name: 'Global Network' }, ...data])
+      }
+    }
+    fetchOrgs()
+  }, [supabase])
+
+  const displayOrgs = organizations.length > 0 ? organizations : [
+    { id: 'all', name: 'Global Network' },
+    { id: 'dealership_1', name: 'Lagos Premium Motors' },
+  ]
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -55,7 +68,7 @@ export function OrganizationSwitcher() {
         </div>
         
         <div className="space-y-1">
-          {mockOrgs.map((org) => (
+          {displayOrgs.map((org) => (
             <button
               key={org.id}
               onClick={() => {

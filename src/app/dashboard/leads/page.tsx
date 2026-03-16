@@ -1,20 +1,16 @@
-'use client'
-
 import { LeadTable } from '@/components/lead-table'
-import { Card, CardContent } from '@/components/ui/card'
 import { 
-    Users, 
-    Flame, 
-    Search, 
-    Filter, 
-    ChevronDown, 
     Download, 
     PlusCircle,
-    SortAsc
+    SortAsc,
+    ChevronDown
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { getDashboardStats } from '@/app/actions'
 
-export default function LeadsPage() {
+export default async function LeadsPage() {
+  const stats = await getDashboardStats()
+
   return (
     <div className="max-w-[1200px] mx-auto space-y-8">
       {/* Header Section */}
@@ -36,10 +32,10 @@ export default function LeadsPage() {
       {/* Quick Filters / Stats Strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
          {[
-             { label: 'All Leads', count: '1,284', active: true },
-             { label: 'Hot Leads', count: '42', color: 'text-amber-500' },
-             { label: 'Qualifying', count: '156' },
-             { label: 'Closed / Won', count: '28' },
+             { label: 'All Leads', count: stats.totalLeads.toString(), active: true },
+             { label: 'Hot Leads', count: stats.hotLeads.toString(), color: 'text-amber-500' },
+             { label: 'Qualifying', count: '156' }, // Mocked or add to actions
+             { label: 'Success Rate', count: stats.successRate, color: 'text-emerald-500' },
          ].map((stat, i) => (
              <button 
                 key={i}
@@ -73,7 +69,7 @@ export default function LeadsPage() {
             <button className="px-4 py-2 text-zinc-500 hover:text-zinc-300 text-xs font-bold rounded-xl uppercase tracking-widest transition-colors">Grid View</button>
          </div>
          <div className="flex items-center gap-4 px-2">
-             <div className="flex items-center gap-2 text-zinc-500">
+            <div className="flex items-center gap-2 text-zinc-500">
                 <SortAsc className="w-3.5 h-3.5" />
                 <span className="text-[10px] font-black uppercase tracking-widest">Sort by: Newest</span>
                 <ChevronDown className="w-3 h-3" />
@@ -82,7 +78,7 @@ export default function LeadsPage() {
       </div>
 
       {/* The Table */}
-      <LeadTable />
+      <LeadTable initialLeads={stats.recentLeads as any} />
     </div>
   )
 }

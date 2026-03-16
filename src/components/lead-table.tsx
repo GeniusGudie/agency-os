@@ -58,8 +58,20 @@ const mockLeads = [
   },
 ]
 
-export function LeadTable() {
+export function LeadTable({ initialLeads = [] }: { initialLeads?: any[] }) {
   const [selectedLead, setSelectedLead] = useState<any>(null)
+  const [leads, setLeads] = useState<any[]>(initialLeads)
+
+  // Format currency for Nigerian Naira
+  const formatNaira = (amount: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      maximumFractionDigits: 0
+    }).format(amount)
+  }
+
+  const displayLeads = leads.length > 0 ? leads : mockLeads
 
   return (
     <div className="space-y-6">
@@ -93,36 +105,36 @@ export function LeadTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockLeads.map((lead) => (
+              {displayLeads.map((lead) => (
                 <TableRow 
                   key={lead.id} 
                   onClick={() => setSelectedLead(lead)}
                   className={cn(
                     "border-zinc-800 transition-all cursor-pointer group",
-                    lead.isHot ? "hover:bg-amber-500/[0.03]" : "hover:bg-indigo-500/[0.03]"
+                    (lead.isHot || lead.is_hot) ? "hover:bg-amber-500/[0.03]" : "hover:bg-indigo-500/[0.03]"
                   )}
                 >
                   <TableCell className="py-4">
                     <div className="flex items-center gap-3">
                       <div className={cn(
                         "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-transform group-hover:scale-105",
-                        lead.isHot ? "bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20 shadow-lg shadow-amber-500/5" : "bg-zinc-950 text-zinc-500 ring-1 ring-zinc-800"
+                        (lead.isHot || lead.is_hot) ? "bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20 shadow-lg shadow-amber-500/5" : "bg-zinc-950 text-zinc-500 ring-1 ring-zinc-800"
                       )}>
-                        {lead.name.split(' ').map(n => n[0]).join('')}
+                        {lead.name.split(' ').map((n: string) => n[0]).join('')}
                       </div>
                       <div>
                         <div className="flex items-center gap-1.5 font-bold text-zinc-100 text-sm">
                           {lead.name}
-                          {lead.isHot && <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500 animate-pulse" />}
+                          {(lead.isHot || lead.is_hot) && <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500 animate-pulse" />}
                         </div>
-                        <div className="text-[10px] text-zinc-500 font-bold tracking-wider">{lead.phone}</div>
+                        <div className="text-[10px] text-zinc-500 font-bold tracking-wider">{lead.phone || lead.phone_number}</div>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <Badge className={cn(
                       "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-sm border-0 shadow-inner",
-                      lead.status === 'New' && "bg-indigo-500/10 text-indigo-400 ring-1 ring-indigo-500/30",
+                      (lead.status === 'New' || lead.status === 'new') && "bg-indigo-500/10 text-indigo-400 ring-1 ring-indigo-500/30",
                       lead.status === 'Qualifying' && "bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/30",
                       lead.status === 'Qualified' && "bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/30",
                       lead.status === 'Lost' && "bg-red-500/10 text-red-400 ring-1 ring-red-500/30",
@@ -130,8 +142,12 @@ export function LeadTable() {
                       {lead.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="font-bold text-zinc-100 text-xs tracking-tight">{lead.budget}</TableCell>
-                  <TableCell className="text-xs text-zinc-500 font-bold">{lead.time}</TableCell>
+                  <TableCell className="font-bold text-zinc-100 text-xs tracking-tight">
+                    {lead.budget_ngn ? formatNaira(lead.budget_ngn) : lead.budget}
+                  </TableCell>
+                  <TableCell className="text-xs text-zinc-500 font-bold">
+                    {lead.created_at ? new Date(lead.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : lead.time}
+                  </TableCell>
                   <TableCell className="text-right">
                     <button className="p-2 text-zinc-600 hover:text-zinc-100 transition-colors">
                       <MoreHorizontal className="w-4 h-4" />
