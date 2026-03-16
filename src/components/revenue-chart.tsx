@@ -12,61 +12,67 @@ import {
 } from 'recharts'
 
 const data = [
-  { name: 'Jan', revenue: 38000 },
-  { name: 'Feb', revenue: 42000 },
-  { name: 'Mar', revenue: 58000 },
-  { name: 'Apr', revenue: 50000 },
-  { name: 'May', revenue: 62000 },
-  { name: 'Jun', revenue: 58000 },
-  { name: 'Jul', revenue: 75000 },
+  { name: 'Mon', leads: 42 },
+  { name: 'Tue', leads: 65 },
+  { name: 'Wed', leads: 48 },
+  { name: 'Thu', leads: 82 },
+  { name: 'Fri', leads: 91 },
+  { name: 'Sat', leads: 34 },
+  { name: 'Sun', leads: 28 },
 ]
 
 export function RevenueChart() {
   return (
-    <Card className="border-0 bg-white shadow-sm overflow-hidden flex-1 flex flex-col pt-2 col-span-1 lg:col-span-2">
+    <Card className="border border-zinc-800 bg-zinc-900 shadow-2xl shadow-black/50 overflow-hidden flex-1 flex flex-col pt-2 col-span-1 lg:col-span-2 rounded-2xl">
       <CardHeader className="pb-0 pl-6">
-        <CardTitle className="text-lg font-bold text-slate-800">
-          Revenue Overview
+        <CardTitle className="text-lg font-bold text-zinc-100">
+          Capture Rate
         </CardTitle>
-        <p className="text-sm text-slate-500">
-          Monthly revenue and project trends
+        <p className="text-sm text-zinc-500">
+          Daily WhatsApp lead generation volume
         </p>
       </CardHeader>
       <CardContent className="flex-1 p-0 pl-0 pr-6 mt-4 min-h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 5, right: 0, left: -20, bottom: 5 }}>
-            {/* Adding gradient def */}
             <defs>
-              <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#6b4cff" stopOpacity={0.1} />
-                <stop offset="95%" stopColor="#6b4cff" stopOpacity={0} />
+              <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1} />
+                <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#27272a" />
             <XAxis 
                 dataKey="name" 
                 axisLine={false} 
                 tickLine={false} 
-                tick={{ fontSize: 12, fill: '#64748b' }} 
+                tick={{ fontSize: 11, fill: '#71717a', fontWeight: 600 }} 
                 dy={10}
             />
             <YAxis 
                 axisLine={false} 
                 tickLine={false} 
-                tick={{ fontSize: 12, fill: '#64748b' }}
-                tickFormatter={(value) => `$${value / 1000}k`}
+                tick={{ fontSize: 11, fill: '#71717a', fontWeight: 600 }}
+                tickFormatter={(value) => `${value}`}
             />
             <Tooltip 
-                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                contentStyle={{ 
+                  backgroundColor: '#18181b', 
+                  border: '1px solid #27272a', 
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.5)' 
+                }}
+                itemStyle={{ color: '#818cf8', fontWeight: 'bold' }}
+                labelStyle={{ color: '#fafafa', marginBottom: '4px' }}
+                cursor={{ stroke: '#3f3f46', strokeWidth: 1 }}
             />
             <Line
               type="monotone"
-              dataKey="revenue"
-              stroke="#6b4cff"
+              dataKey="leads"
+              stroke="#6366f1"
               strokeWidth={3}
               dot={false}
-              activeDot={{ r: 6, fill: '#6b4cff', stroke: '#fff', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#6366f1', stroke: '#18181b', strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>
