@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+@layer utilities {
+  body {
+    background-color: theme('colors.zinc.950');
+    color: theme('colors.zinc.50');
+  }
+}
