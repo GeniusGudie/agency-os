@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import os
 from dotenv import load_dotenv
-from supabase import create_client, Client
+from postgrest import SyncPostgrestClient
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -20,10 +20,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Supabase
+# Initialize Postgrest (bypass meta-package dependency issues)
 url: str = os.environ.get("NEXT_PUBLIC_SUPABASE_URL", "")
 key: str = os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY", "")
-supabase: Client = create_client(url, key)
+headers = {"apikey": key, "Authorization": f"Bearer {key}"}
+client = SyncPostgrestClient(f"{url}/rest/v1", headers=headers)
 
 class Lead(BaseModel):
     name: str
@@ -39,8 +40,9 @@ async def health_check():
 @app.post("/process-lead")
 async def process_lead(lead: Lead):
     try:
-        data, count = supabase.table("leads").insert(lead.dict()).execute()
-        return {"message": "Lead processed successfully", "data": data}
+        # Using postgrest client directly
+        data = client.table("leads").insert(lead.dict()).execute()
+        return {"message": "Lead processed successfully", "data": data.data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
