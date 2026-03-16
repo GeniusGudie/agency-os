@@ -48,7 +48,12 @@ export function OrganizationSwitcher() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-3 px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-2xl hover:bg-zinc-800/80 transition-all group"
       >
-        <div className="w-8 h-8 rounded-xl bg-accent/10 flex items-center justify-center text-accent ring-1 ring-accent/20 group-hover:scale-110 transition-transform">
+        <div className={cn(
+          "w-8 h-8 rounded-xl flex items-center justify-center ring-1 group-hover:scale-110 transition-transform",
+          currentOrg 
+            ? "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20" 
+            : "bg-indigo-500/10 text-indigo-400 ring-indigo-500/20"
+        )}>
           {currentOrg ? <Building2 size={16} /> : <Globe size={16} />}
         </div>
         <div className="text-left">

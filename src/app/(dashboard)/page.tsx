@@ -97,16 +97,24 @@ export default function OverviewPage() {
     fetchStats();
   }, [supabase]);
 
+  const isAgency = !stats.loading && !document.cookie.match(new RegExp('(^| )org_id=([^;]+)'));
+
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20 md:pb-0">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <p className="text-accent text-[10px] font-black tracking-[0.3em] uppercase mb-2">Automotive Intelligence</p>
-          <h1 className="text-4xl font-black tracking-tighter text-white">Node Health Overview</h1>
+          <p className="text-accent text-[10px] font-black tracking-[0.3em] uppercase mb-2">
+            {isAgency ? "Master Control View" : "Dealership Operations"}
+          </p>
+          <h1 className="text-4xl font-black tracking-tighter text-white">
+            {isAgency ? "Global Agency Stats" : "Localized Performance"}
+          </h1>
         </div>
         <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl shrink-0">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Live Infrastructure</span>
+          <div className={cn("w-2 h-2 rounded-full animate-pulse", isAgency ? "bg-indigo-500" : "bg-emerald-500")} />
+          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+            {isAgency ? "Agency Node: Active" : "Local Node: Streaming"}
+          </span>
         </div>
       </div>
 

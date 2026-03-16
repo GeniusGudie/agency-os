@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { 
   BarChart3, 
   MessageSquare, 
@@ -28,7 +29,14 @@ const navigation = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const supabase = createClient();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
   return (
     <aside className={cn(
@@ -77,11 +85,17 @@ export function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-border space-y-1">
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-500 hover:text-white hover:bg-zinc-800 transition-all group">
+        <button 
+          onClick={() => alert("Settings panel coming soon in v16.2")}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-500 hover:text-white hover:bg-zinc-800 transition-all group"
+        >
           <Settings size={20} />
           {!collapsed && <span>Settings</span>}
         </button>
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-500/10 transition-all group">
+        <button 
+          onClick={handleSignOut}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-500/10 transition-all group"
+        >
           <LogOut size={20} />
           {!collapsed && <span>Sign Out</span>}
         </button>

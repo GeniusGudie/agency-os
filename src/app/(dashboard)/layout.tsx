@@ -2,6 +2,7 @@
 
 import { Sidebar } from "@/components/sidebar";
 import { OrganizationSwitcher } from "@/components/organization-switcher";
+import { ViewModeIndicator } from "@/components/view-mode-indicator";
 import { User, Bell, BarChart3, MessageSquare, Users, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -30,13 +31,12 @@ export default function ProtectedLayout({
 
       <div className="flex-1 flex flex-col md:ml-64 transition-all duration-300">
         {/* Header */}
-        <header className="h-20 border-b border-border bg-background/50 backdrop-blur-md sticky top-0 z-40 px-6 md:px-8 flex items-center justify-between">
-          <div className="flex items-center gap-3 md:gap-6">
+        <header className="h-24 border-b border-border bg-background/50 backdrop-blur-md sticky top-0 z-40 px-6 md:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-3 md:gap-8">
             <div className="md:hidden w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-black text-xl">
               A
             </div>
-            <h2 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] hidden sm:block">Infrastructure Monitoring</h2>
-            <h2 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] sm:hidden">Monitor</h2>
+            <ViewModeIndicator />
           </div>
           <div className="flex items-center gap-3 md:gap-4">
             <button className="p-2 hover:bg-zinc-900 rounded-xl transition-colors text-zinc-500 hidden sm:flex">
