@@ -25,6 +25,7 @@ import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { BotStatusPanel } from "@/components/bot-status-panel";
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 60;
 
 const data = [
