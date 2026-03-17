@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { LogIn, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -141,6 +142,12 @@ export default function LoginPage() {
           </button>
         </div>
         
+        <div className="text-center animate-in fade-in slide-in-from-top-4 duration-1000 delay-500">
+          <Link href="/signup" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 hover:text-accent transition-colors group">
+            New to the platform? <span className="text-accent underline underline-offset-4 group-hover:text-accent-hover">Create Infrastructure Account</span>
+          </Link>
+        </div>
+
         <p className="text-center text-zinc-700 text-[10px] font-bold uppercase tracking-widest">
           Secure Multi-Tenant Infrastructure v1.0
         </p>

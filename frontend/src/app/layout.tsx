@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={cn(sora.variable, "font-sans")}>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className={cn(sora.variable, "font-sans")} suppressHydrationWarning>
         {children}
       </body>
     </html>

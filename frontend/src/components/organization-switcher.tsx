@@ -59,7 +59,7 @@ export function OrganizationSwitcher() {
         <div className="text-left">
           <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest leading-none mb-1">Context Node</p>
           <p className="text-sm font-black text-white tracking-tight leading-none uppercase">
-            {currentOrg ? currentOrg.name : "Global Overview"}
+            {currentOrg ? `Portal: ${currentOrg.name}` : "Agency Command Center"}
           </p>
         </div>
         <ChevronDown size={16} className={cn("text-zinc-600 ml-2 transition-transform duration-300", isOpen && "rotate-180")} />
@@ -78,7 +78,7 @@ export function OrganizationSwitcher() {
                 !currentOrg ? "bg-accent text-white" : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
               )}
             >
-              <span className="text-xs font-black uppercase tracking-widest">Global Overview</span>
+              <span className="text-xs font-black uppercase tracking-widest">Agency Command Center</span>
               {!currentOrg && <Check size={14} />}
             </button>
             <div className="h-px bg-zinc-800/50 my-1 mx-2" />

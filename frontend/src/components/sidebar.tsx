@@ -13,7 +13,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Workflow,
-  Building2
+  Building2,
+  Sun,
+  Moon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -35,7 +37,19 @@ export function Sidebar() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    document.cookie = "org_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
     router.push("/login");
+  };
+
+  const toggleTheme = () => {
+    const html = document.documentElement;
+    if (html.classList.contains('dark')) {
+      html.classList.remove('dark');
+      html.classList.add('light');
+    } else {
+      html.classList.remove('light');
+      html.classList.add('dark');
+    }
   };
 
   return (
@@ -85,6 +99,14 @@ export function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-border space-y-1">
+        <button 
+          onClick={toggleTheme}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-500 hover:text-white hover:bg-zinc-800 transition-all group"
+        >
+          <Sun size={20} className="hidden dark:block" />
+          <Moon size={20} className="block dark:hidden" />
+          {!collapsed && <span>Switch Theme</span>}
+        </button>
         <button 
           onClick={() => alert("Settings panel coming soon in v16.2")}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-500 hover:text-white hover:bg-zinc-800 transition-all group"
